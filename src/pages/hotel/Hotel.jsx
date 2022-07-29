@@ -1,25 +1,27 @@
-import React from 'react'
+import React, {useState} from 'react'
 import Navbar from '../../components/navbar/Navbar';
 import Header from '../../components/header/Header';
 import MailList from '../../components/mailList/MailList';
 import Footer from '../../components/footer/Footer';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faLocationDot } from '@fortawesome/free-solid-svg-icons'
+import { faCircleArrowLeft, faCircleArrowRight, faCircleXmark, faLocationDot } from '@fortawesome/free-solid-svg-icons'
 import './hotel.css'
 
 const Hotel = () => {
+  const [slideNumber, setSlideNumber] = useState(0)
+  const [open, setOpen] = useState(false)
   const photos = [
     {
       src: "https://q-xx.bstatic.com/xdata/images/xphoto/300x240/57584488.jpeg?k=d8d4706fc72ee789d870eb6b05c0e546fd4ad85d72a3af3e30fb80ca72f0ba57&o="
     },
     {
-      src: "https://q-xx.bstatic.com/xdata/images/xphoto/300x240/57584488.jpeg?k=d8d4706fc72ee789d870eb6b05c0e546fd4ad85d72a3af3e30fb80ca72f0ba57&o="
+      src: "https://cf.bstatic.com/xdata/images/hotel/max1024x768/298718901.jpg?k=2a55cf2d19497448f727024de2abc1d80889262102344f2752c1f407ab26b054&o=&hp=1"
     },
     {
       src: "https://q-xx.bstatic.com/xdata/images/xphoto/300x240/57584488.jpeg?k=d8d4706fc72ee789d870eb6b05c0e546fd4ad85d72a3af3e30fb80ca72f0ba57&o="
     },
     {
-      src: "https://q-xx.bstatic.com/xdata/images/xphoto/300x240/57584488.jpeg?k=d8d4706fc72ee789d870eb6b05c0e546fd4ad85d72a3af3e30fb80ca72f0ba57&o="
+      src: "https://cf.bstatic.com/xdata/images/hotel/max1024x768/298718901.jpg?k=2a55cf2d19497448f727024de2abc1d80889262102344f2752c1f407ab26b054&o=&hp=1"
     },
     {
       src: "https://q-xx.bstatic.com/xdata/images/xphoto/300x240/57584488.jpeg?k=d8d4706fc72ee789d870eb6b05c0e546fd4ad85d72a3af3e30fb80ca72f0ba57&o="
@@ -34,11 +36,37 @@ const Hotel = () => {
       src: "https://q-xx.bstatic.com/xdata/images/xphoto/300x240/57584488.jpeg?k=d8d4706fc72ee789d870eb6b05c0e546fd4ad85d72a3af3e30fb80ca72f0ba57&o="
     },
   ]
+
+  const handleOpen = (i) => {
+    setSlideNumber(i);
+    setOpen(true)
+  }
+
+  const handleMove = (direction) => {
+    let newSlideNumber;
+
+    if(direction==='l'){
+      newSlideNumber = slideNumber === 0 ? 5 : slideNumber-1
+    }
+    if(direction==='r'){
+      newSlideNumber = slideNumber === 5 ? 0 : slideNumber+1
+    }
+
+    setSlideNumber(newSlideNumber);
+  }
   return (
     <div>
       <Navbar />
       <Header type='list' />
       <div className="hotelContainer">
+        {open && <div className='slider'>
+            <FontAwesomeIcon icon={faCircleXmark} className="close" onClick={()=>setOpen(false)}/>
+            <FontAwesomeIcon icon={faCircleArrowLeft} className="arrow" onClick={() => handleMove('l')}/>
+              <div className="sliderWrapper">
+                <img src={photos[slideNumber].src} alt="" className="sliderImg" />
+              </div>
+            <FontAwesomeIcon icon={faCircleArrowRight} className="arrow" onClick={() => handleMove('r')}/>
+          </div>}
         <div className="hotelWrapper">
           <button className="bookNow">Reserve or Book Now!</button>
           <h1 className="hotelTitle">Grand Hotel</h1>
@@ -49,9 +77,9 @@ const Hotel = () => {
           <span className="hotelDistance">Excellent location from center</span>
           <span className="hotelPriceHighlight">Book a stay over $144 at this property and get a free airport taxi</span>
           <div className="hotelImages">
-            {photos.map(photo => (
+            {photos.map((photo,id) => (
               <div className="hotelImgWrapper">
-                <img src={photo.src} className="hotelImg" />
+                <img onClick={()=>handleOpen(id)} src={photo.src} className="hotelImg" />
               </div>
             ))}
           </div>
