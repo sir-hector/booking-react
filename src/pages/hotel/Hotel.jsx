@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useState, useContext} from 'react'
 import Navbar from '../../components/navbar/Navbar';
 import Header from '../../components/header/Header';
 import MailList from '../../components/mailList/MailList';
@@ -8,6 +8,7 @@ import { faCircleArrowLeft, faCircleArrowRight, faCircleXmark, faLocationDot } f
 import useFetch from '../../hooks/useFetch';
 import './hotel.css'
 import { useLocation } from 'react-router-dom';
+import { SearchContext } from '../../context/SearchContext';
 
 const Hotel = () => {
   const location = useLocation();
@@ -18,35 +19,17 @@ const Hotel = () => {
 
   const {data, loading, error} = useFetch(`http://localhost:8800/api/hotels/find/${id}`)
 
-  const photos = [
-    {
-      src: "https://q-xx.bstatic.com/xdata/images/xphoto/300x240/57584488.jpeg?k=d8d4706fc72ee789d870eb6b05c0e546fd4ad85d72a3af3e30fb80ca72f0ba57&o="
-    },
-    {
-      src: "https://cf.bstatic.com/xdata/images/hotel/max1024x768/298718901.jpg?k=2a55cf2d19497448f727024de2abc1d80889262102344f2752c1f407ab26b054&o=&hp=1"
-    },
-    {
-      src: "https://q-xx.bstatic.com/xdata/images/xphoto/300x240/57584488.jpeg?k=d8d4706fc72ee789d870eb6b05c0e546fd4ad85d72a3af3e30fb80ca72f0ba57&o="
-    },
-    {
-      src: "https://cf.bstatic.com/xdata/images/hotel/max1024x768/298718901.jpg?k=2a55cf2d19497448f727024de2abc1d80889262102344f2752c1f407ab26b054&o=&hp=1"
-    },
-    {
-      src: "https://q-xx.bstatic.com/xdata/images/xphoto/300x240/57584488.jpeg?k=d8d4706fc72ee789d870eb6b05c0e546fd4ad85d72a3af3e30fb80ca72f0ba57&o="
-    },
-    {
-      src: "https://q-xx.bstatic.com/xdata/images/xphoto/300x240/57584488.jpeg?k=d8d4706fc72ee789d870eb6b05c0e546fd4ad85d72a3af3e30fb80ca72f0ba57&o="
-    },
-    {
-      src: "https://q-xx.bstatic.com/xdata/images/xphoto/300x240/57584488.jpeg?k=d8d4706fc72ee789d870eb6b05c0e546fd4ad85d72a3af3e30fb80ca72f0ba57&o="
-    },
-    {
-      src: "https://q-xx.bstatic.com/xdata/images/xphoto/300x240/57584488.jpeg?k=d8d4706fc72ee789d870eb6b05c0e546fd4ad85d72a3af3e30fb80ca72f0ba57&o="
-    },
-  ]
+  const {date, options} = useContext(SearchContext);
 
-  const defaultImageUrl = "https://cf.bstatic.com/xdata/images/hotel/max1024x768/254095365.jpg?k=3825cad66905c879e6610389d21511c35c65aaf1324dc09651c95817015ce774&o=&hp=1"
+  const MILLISECONDS_PER_DAY = 1000 * 60 * 60 *24;
 
+  function dayDifference(date1, date2) {
+    const timeDiff = Math.abs(date2.getTime() - date1.getTime());
+    const diffDays = Math.ceil(timeDiff / MILLISECONDS_PER_DAY);
+    return diffDays;
+  }
+
+  const days = dayDifference(date[0].endDate, date[0].startDate);
 
   const handleOpen = (i) => {
     setSlideNumber(i);
@@ -102,10 +85,10 @@ const Hotel = () => {
               </p>
             </div>
             <div className="hotelDetailsPrice">
-              <h1>Perfect for a 9-night stay!</h1>
+              <h1>Perfect for a {days}-night stay!</h1>
               <span>Located in the real heart of Krakow</span>
               <h2>
-                <b>$945</b> (9Nights)
+                <b>${days * data.cheapestPrice * options.room}</b> ({days}Nights)
               </h2>
               <button>Reserve or book Now!</button>
             </div>
