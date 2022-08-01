@@ -3,6 +3,8 @@ import './navbar.css'
 import { Link } from 'react-router-dom'
 
 const Navbar = () => {
+  const {user} = useContext(AuthContext)
+  
   return (
     <div className="navbar">
         <div className="navContainer">
