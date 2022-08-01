@@ -7,19 +7,24 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleArrowLeft, faCircleArrowRight, faCircleXmark, faLocationDot } from '@fortawesome/free-solid-svg-icons'
 import useFetch from '../../hooks/useFetch';
 import './hotel.css'
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { SearchContext } from '../../context/SearchContext';
+import { AuthContext } from '../../context/AuthContext';
+import Reserve from '../../components/reserve/Reserve';
 
 const Hotel = () => {
   const location = useLocation();
   const id = (location.pathname.split("/")[2])
   const [slideNumber, setSlideNumber] = useState(0)
   const [open, setOpen] = useState(false)
+  const [openModal, setOpenModal] = useState(false)
   
 
   const {data, loading, error} = useFetch(`http://localhost:8800/api/hotels/find/${id}`)
 
   const {date, options} = useContext(SearchContext);
+  const {user} = useContext(AuthContext);
+  const navigate = useNavigate()
 
   const MILLISECONDS_PER_DAY = 1000 * 60 * 60 *24;
 
@@ -47,6 +52,13 @@ const Hotel = () => {
     }
 
     setSlideNumber(newSlideNumber);
+  }
+  const handleClick = () => {
+    if(user){
+      setOpenModal(true)
+    }else{
+      navigate("/")
+    }
   }
   return (
     <div>
@@ -90,13 +102,14 @@ const Hotel = () => {
               <h2>
                 <b>${days * data.cheapestPrice * options.room}</b> ({days}Nights)
               </h2>
-              <button>Reserve or book Now!</button>
+              <button onClick={handleClick}>Reserve or book Now!</button>
             </div>
           </div>
         </div>
+      </div></>)}
+      {openModal && <Reserve setOpen={setOpenModal} hotelId={id}/>}
         <MailList />
         <Footer />
-      </div></>)}
     </div>
   )
 }
