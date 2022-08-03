@@ -21,6 +21,7 @@
     top: 0;
     right: 0;
     cursor: pointer;
+    padding: 10px;
 }
 
 .rItem {
@@ -58,4 +59,17 @@
     cursor: pointer;
     margin-top: 20px;
     padding: 10px 20px;
+}
+
+.rSelectRooms {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    font-size: 8px;
+    color: grey
+}
+
+.room {
+    display: flex;
+    flex-direction: column;
 }
